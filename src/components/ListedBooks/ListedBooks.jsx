@@ -8,17 +8,29 @@ import Wishlist from "../WishList/Wishlist";
 
 const ListedBooks = () => {
   const { wishlist, read } = useContext(BookContext);
+  console.log(read);
+  
   
   const [sort, setSort] = useState('')
+  const [sorterRead, setSortedRead] = useState(read)
+  const [sortedWishList, setSortedWishList] = useState(wishlist)
   
   const handleSort = (sortType) =>{
     setSort(sortType)
-    if (sort === "ratings") {
-      return [...read].sort((a, b) => b.rating - a.rating);
-    } else if (sort === "pages") {
-      return [...read].sort((a, b) => b.totalPages - a.totalPages);
+    if (sortType === "ratings") {
+      setSortedRead([...read].sort((a, b) => b.rating - a.rating));
+      setSortedWishList([...wishlist].sort((a, b) => b.rating - a.rating));
+      
+
+    } else if (sortType === "pages") {
+      setSortedRead([...read].sort((a, b) => b.totalPages - a.totalPages));
+      setSortedWishList([...wishlist].sort((a, b) => b.totalPages - a.totalPages));
     }
-    return read; // Return unsorted if no sort is selected
+    else{
+      setSortedRead(read);
+      setSortedWishList(wishlist);
+
+    } 
         
   }
   
@@ -29,7 +41,7 @@ const ListedBooks = () => {
    <div>
     <p>Books</p>
     <div class="dropdown">
-  <div tabindex="0" role="button" class="btn m-1">{sort ? {sort} : "sort By"}</div>
+  <div tabindex="0" role="button" class="btn m-1">{sort || "sort By"}</div>
   <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
     <li onClick={()=> handleSort("ratings")}><a>Sort by Ratings</a></li>
     <li onClick={()=> handleSort("pages")}><a>Sort by Pages</a></li>
@@ -46,14 +58,14 @@ const ListedBooks = () => {
       <h2>Any content 1</h2>
      <p>Read {read.bookId}</p>
      {
-        read.map(singleRead => <ReadBook key={singleRead.bookId} singleRead={singleRead}></ReadBook>)
+        sorterRead.map(singleRead => <ReadBook key={singleRead.bookId} singleRead={singleRead}></ReadBook>)
      }
      
     </TabPanel>
     <TabPanel>
       <h2>Any content 2</h2>
       {
-        wishlist.map(singleWishList => <Wishlist key={singleWishList.bookId} singleWishList={singleWishList}></Wishlist>)
+        sortedWishList.map(singleWishList => <Wishlist key={singleWishList.bookId} singleWishList={singleWishList}></Wishlist>)
      }
     </TabPanel>
   </Tabs>
